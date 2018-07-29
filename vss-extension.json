@@ -2,10 +2,10 @@
   "manifestVersion": 1,
   "id": "vsts-esy",
   "name": "Esy",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "publisher": "ulrikstrid",
   "description": "Run esy commands in VSTS.",
-  "public": false,
+  "public": true,
   "categories": ["Build and release"],
   "author": "Ulrik Strid",
   "targets": [
@@ -13,11 +13,23 @@
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
+  "icons": {
+    "default": "images/logo.png"
+  },
   "files": [
     {
       "path": "buildAndReleaseTask"
     }
   ],
+  "content": {
+    "details": {
+      "path": "README.md"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/ulrikstrid/vsts-esy-extension"
+  },
   "contributions": [
     {
       "id": "custom-build-release-task",

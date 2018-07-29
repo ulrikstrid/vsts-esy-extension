@@ -1,6 +1,7 @@
 node_modules
 *.vsix
 .taskkey
+.DS_store
 
 buildAndReleaseTask/*.js
 buildAndReleaseTask/*.d.ts

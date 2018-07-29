@@ -2,7 +2,7 @@
   "id": "de6ff299-5f71-4949-8fb6-bfb690b9cb5d",
   "name": "esy",
   "friendlyName": "Esy",
-  "instanceNameFormat": "Esy $(Arguments)",
+  "instanceNameFormat": "Esy $(arguments)",
   "description": "Run esy commands in VSTS.",
   "helpMarkDown": "",
   "category": "Utility",
@@ -11,8 +11,8 @@
   "demands": ["node.js"],
   "version": {
     "Major": 0,
-    "Minor": 3,
-    "Patch": 3
+    "Minor": 4,
+    "Patch": 0
   },
   "runsOn": ["Agent", "DeploymentGroup"],
   "groups": [
