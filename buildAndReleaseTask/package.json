@@ -1,0 +1,16 @@
+{
+  "name": "buildAndReleaseTask",
+  "version": "0.3.3",
+  "description": "",
+  "main": "esy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esy": "*",
+    "vsts-task-lib": "^2.6.0"
+  }
+}

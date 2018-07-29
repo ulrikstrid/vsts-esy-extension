@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "target": "es6",
+    "inlineSourceMap": true,
+    "declaration": true
+  },
+  "filesGlob": ["./buildAndReleaseTask/*.ts"],
+  "exclude": [".BuildOutput"]
+}

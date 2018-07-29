@@ -1,0 +1,24 @@
+{
+  "name": "vsts-esy-extension",
+  "version": "0.3.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prerelease": "tsc",
+    "release": "tfx extension create --manifest-globs vss-extension.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esy": "0.0.70",
+    "vsts-task-lib": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.5.2",
+    "typescript": "^2.9.2"
+  }
+}
