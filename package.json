@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "esy": "0.0.70",
+    "tfx-cli": "^0.5.14",
     "vsts-task-lib": "^2.6.0"
   },
   "devDependencies": {
