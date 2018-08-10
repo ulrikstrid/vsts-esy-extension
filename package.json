@@ -1,12 +1,11 @@
 {
   "name": "vsts-esy-extension",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "prerelease": "tsc",
     "release": "tfx extension create --manifest-globs vss-extension.json"
   },

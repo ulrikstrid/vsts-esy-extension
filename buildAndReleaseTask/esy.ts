@@ -2,7 +2,6 @@ import * as path from "path";
 
 import * as tl from "vsts-task-lib/task";
 import { ToolRunner } from "vsts-task-lib/toolrunner";
-import { resolve } from "../node_modules/@types/q";
 
 const cwd = tl.getPathInput("cwd", true, false);
 tl.mkdirP(cwd);
@@ -27,7 +26,7 @@ new Promise((resolve, reject) => {
     tl.debug("not found global installed esy, try to find esy locally");
 
     const npm = new ToolRunner(tl.which("npm", true));
-    npm.arg(["install", "esy"]);
+    npm.arg(["install", "esy@latest"]);
 
     return npm.exec().then(x => {
       esyPath = localEsyPath;
