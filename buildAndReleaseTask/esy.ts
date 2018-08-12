@@ -9,57 +9,99 @@ tl.cd(cwd);
 
 tl.setResourcePath(path.join(__dirname, "task.json"));
 
-let esyPath = tl.which("esy", false);
-let localEsyPath = path.join(cwd, "node_modules", "esy", "bin", "esy");
+let esy = findGlobalEsy();
 
-new Promise((resolve, reject) => {
-  if (tl.exist(localEsyPath)) {
-    // if we have a locally installed esy we probably want that
-    const esy = new ToolRunner(localEsyPath);
-    resolve(esy);
-  } else if (tl.exist(esyPath)) {
-    // use globally installed esy if it exists
-    const esy = new ToolRunner(esyPath);
-    resolve(esy);
+if (esy) {
+  findEsy();
+} else {
+  findEsy();
+}
+
+function findEsy(): Q.Promise<void> {
+  tl.debug("not found global installed esy, try to find esy locally.");
+
+  let esyRuntime = tl.getInput("esyRuntime", true);
+  esyRuntime = path.resolve(cwd, esyRuntime);
+
+  tl.debug("check path : " + esyRuntime);
+  if (tl.exist(esyRuntime)) {
+    const tool = tl.tool(tl.which("node", true));
+    tool.arg(esyRuntime);
+
+    return executeEsy(tool);
   } else {
-    // install esy locally and use that
-    tl.debug("not found global installed esy, try to find esy locally");
+    tl.debug(
+      "not found locally installed esy, trying to install esy globally."
+    );
 
-    const npm = new ToolRunner(tl.which("npm", true));
-    npm.arg(["install", "esy@latest"]);
-
-    return npm.exec().then(x => {
-      esyPath = localEsyPath;
-
-      if (!tl.exist(esyPath)) {
-        tl.setResult(
-          tl.TaskResult.Failed,
-          tl.loc("EsyCouldNotInstall", esyPath)
-        );
-        return reject(new Error("Could not install esy"));
-      }
-
-      const esy = new ToolRunner(esyPath);
-      resolve(esy);
-    });
+    return installEsy().then(() => executeEsy());
   }
-})
-  .then(
-    (esy: ToolRunner): any => {
-      esy.arg(tl.getDelimitedInput("arguments", " ", true));
+}
 
-      return esy
-        .exec()
-        .then(code => {
-          tl.setResult(tl.TaskResult.Succeeded, tl.loc("EsyReturnCode", code));
-        })
-        .catch(err => {
-          tl.debug("taskRunner fail");
-          tl.setResult(tl.TaskResult.Failed, tl.loc("EsyFailed", err.message));
-        });
+function installEsy(): Q.Promise<void> {
+  const tool = tl.tool(tl.which("npm", true));
+  tool.arg("install");
+  tool.arg("-g");
+  tool.arg("esy");
+
+  return tool.exec().then(() => {
+    esy = findGlobalEsy();
+    if (!esy) {
+      tl.setResult(tl.TaskResult.Failed, tl.loc("NpmGlobalNotInPath"));
+      throw new Error("NPM_GLOBAL_PREFIX_NOT_IN_PATH");
     }
-  )
-  .catch((err: Error) => {
-    tl.debug("Esy install fail");
-    tl.setResult(tl.TaskResult.Failed, tl.loc("EsyNotInstalled", err.message));
   });
+}
+
+function executeEsy(tool?: ToolRunner): Q.Promise<void> {
+  tool = tool || tl.tool(esy);
+  tool.arg(tl.getDelimitedInput("arguments", " ", true));
+
+  tool.arg("--config.interactive=false");
+  tool.arg(tl.getInput("arguments", false));
+
+  return tool
+    .exec()
+    .then(code => {
+      tl.setResult(tl.TaskResult.Succeeded, tl.loc("EsyReturnCode", code));
+    })
+    .catch(err => {
+      tl.debug("Esy execution failed");
+      tl.setResult(tl.TaskResult.Failed, tl.loc("EsyFailed", err.message));
+    });
+}
+
+function findGlobalEsy(): string {
+  let esyPath = tl.which("esy", false);
+
+  tl.debug(`checking path: ${esyPath}`);
+  if (tl.exist(esyPath)) {
+    return esyPath;
+  }
+
+  const globalPrefix = getNPMPrefix(),
+    isWin = process.platform.indexOf("win") === 0;
+
+  esyPath = path.join(globalPrefix, "esy" + (isWin ? ".cmd" : ""));
+
+  tl.debug(`checking path: ${esyPath}`);
+  if (tl.exist(esyPath)) {
+    return esyPath;
+  }
+}
+
+let npmPrefix: string | null = null;
+
+function getNPMPrefix(): string {
+  if (npmPrefix != null) {
+    return npmPrefix;
+  }
+
+  const tool = tl.tool(tl.which("npm", true));
+  tool.arg("prefix");
+  tool.arg("-g");
+
+  npmPrefix = tool.execSync().stdout.trim();
+
+  return npmPrefix;
+}

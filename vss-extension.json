@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "vsts-esy",
   "name": "Esy",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "publisher": "ulrikstrid",
   "description": "Run esy commands in VSTS.",
   "public": true,
