@@ -12,7 +12,7 @@ tl.setResourcePath(path.join(__dirname, "task.json"));
 let esy = findGlobalEsy();
 
 if (esy) {
-  findEsy();
+  executeEsy();
 } else {
   findEsy();
 }
@@ -20,8 +20,8 @@ if (esy) {
 function findEsy(): Q.Promise<void> {
   tl.debug("not found global installed esy, try to find esy locally.");
 
-  let esyRuntime = tl.getInput("esyRuntime", true);
-  esyRuntime = path.resolve(cwd, esyRuntime);
+  const esyPath = tl.getInput("esyPath", false);
+  const esyRuntime = path.resolve(cwd, esyPath);
 
   tl.debug("check path : " + esyRuntime);
   if (tl.exist(esyRuntime)) {
@@ -43,6 +43,7 @@ function installEsy(): Q.Promise<void> {
   tool.arg("install");
   tool.arg("-g");
   tool.arg("esy");
+  tool.arg("--unsafe-perm");
 
   return tool.exec().then(() => {
     esy = findGlobalEsy();
@@ -56,9 +57,6 @@ function installEsy(): Q.Promise<void> {
 function executeEsy(tool?: ToolRunner): Q.Promise<void> {
   tool = tool || tl.tool(esy);
   tool.arg(tl.getDelimitedInput("arguments", " ", true));
-
-  tool.arg("--config.interactive=false");
-  tool.arg(tl.getInput("arguments", false));
 
   return tool
     .exec()
@@ -90,18 +88,10 @@ function findGlobalEsy(): string {
   }
 }
 
-let npmPrefix: string | null = null;
-
 function getNPMPrefix(): string {
-  if (npmPrefix != null) {
-    return npmPrefix;
-  }
-
   const tool = tl.tool(tl.which("npm", true));
   tool.arg("prefix");
   tool.arg("-g");
 
-  npmPrefix = tool.execSync().stdout.trim();
-
-  return npmPrefix;
+  return tool.execSync().stdout.trim();
 }

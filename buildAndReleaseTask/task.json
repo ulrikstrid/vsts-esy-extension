@@ -12,7 +12,7 @@
   "version": {
     "Major": 0,
     "Minor": 5,
-    "Patch": 0
+    "Patch": 5
   },
   "runsOn": ["Agent", "DeploymentGroup"],
   "groups": [
@@ -35,7 +35,7 @@
       "name": "arguments",
       "type": "string",
       "label": "Arguments",
-      "defaultValue": "",
+      "defaultValue": "install",
       "required": true,
       "helpMarkDown": "Additionals arguments"
     },
@@ -43,8 +43,8 @@
       "name": "esyPath",
       "type": "string",
       "label": "esy location",
-      "defaultValue": "node_modules/.bin/esy",
-      "required": true,
+      "defaultValue": "node_modules/esy/bin/esy",
+      "required": false,
       "helpMarkDown": "esy to run when agent can't find global installed esy.  Defaults to the esy under node_modules folder of the working directory.",
       "groupName": "advanced"
     }
